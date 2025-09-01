@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Box, Button, Container, Dialog, DialogContent, TextField } from '@mui/material'
 import ReactTable from './components/ReactTable'
-import './App.css'
 import ReactForm from './components/ReactForm';
+import { useAppSelector } from './redux/hook';
+import type { RootState } from './redux/store';
+import './App.css'
 
 function App() {
+  const { data } = useAppSelector((state: RootState) => state.record)
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -15,6 +18,23 @@ function App() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const filteredUsers = data.filter((user) => {
+    const searchText = searchTerm.toLowerCase();
+    return (
+      user.firstName.toLowerCase().includes(searchText) ||
+      user.lastName.toLowerCase().includes(searchText) ||
+      user.email.toLowerCase().includes(searchText) ||
+      user.address.toLowerCase().includes(searchText) ||
+      user.city.toLowerCase().includes(searchText) ||
+      user.state.toLowerCase().includes(searchText) ||
+      user.country.toLowerCase().includes(searchText) ||
+      user.companyName.toLowerCase().includes(searchText) ||
+      user.role.toLowerCase().includes(searchText) ||
+      user.yearsOfExperience?.toString().includes(searchText) ||
+      user.zip?.toString().includes(searchText)
+    );
+  });
 
 
   return (
@@ -36,7 +56,7 @@ function App() {
         />
         <Button variant='contained' onClick={handleClickOpen} sx={{ marginLeft: '12px' }}>NEW</Button>
       </Box>
-      <ReactTable />
+      <ReactTable data={filteredUsers} />
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <ReactForm handleCloseDialog={handleClose} />

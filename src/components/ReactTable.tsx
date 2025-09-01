@@ -7,12 +7,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import { useAppSelector } from '../redux/hook';
-import type { RootState } from '../redux/store';
+import type { IUserData } from '../types/common'
 
-const ReactTable = () => {
-  const { data } = useAppSelector((state: RootState) => state.record)
-
+const ReactTable: React.FC<{ data: IUserData[] }> = ({ data }) => {
   return (
     <Container>
       <TableContainer>
