@@ -1,8 +1,22 @@
+import type { FormikProps } from "formik";
+
 export interface IRecordState {
-  data: IUser[] | null
+  data: IUserData[]
 }
 
-export interface IUser {
-  id: number,
-  name: string
+export interface IUserData {
+  id: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  address: string,
+  zip: number | null,
+  city: string,
+  state: string,
+  country: string,
+  companyName: string,
+  role: string,
+  yearsOfExperience: number | null
 }
+
+export type TStepProps = FormikProps<IUserData>;
