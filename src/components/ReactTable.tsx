@@ -13,10 +13,18 @@ import type { IUserData } from '../types/common'
 import { useAppDispatch } from '../redux/hook'
 import { removeRecord } from '../redux/record/recordSlice'
 
-const ReactTable: React.FC<{ data: IUserData[] }> = ({ data }) => {
+const ReactTable: React.FC<{ 
+  data: IUserData[],
+  setUserData: (user: IUserData) => void,
+  handleClickOpen: () => void
+}> = ({ data, setUserData, handleClickOpen }) => {
   const dispatch = useAppDispatch();
   const handleDeleteRecord = (id: string) => {
     dispatch(removeRecord({ id }));
+  };
+  const handleUpdateRecord = (data: IUserData) => {
+    handleClickOpen();
+    setUserData(data);
   }
   return (
     <Container>
@@ -51,7 +59,7 @@ const ReactTable: React.FC<{ data: IUserData[] }> = ({ data }) => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell sx={{ display: 'flex' }}>
-                  <Button>
+                  <Button onClick={() => handleUpdateRecord(row)}>
                     <EditOffOutlined />
                   </Button>
                   <Button onClick={() => handleDeleteRecord(row.id)}>

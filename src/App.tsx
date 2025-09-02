@@ -5,10 +5,12 @@ import ReactForm from './components/ReactForm';
 import { useAppSelector } from './redux/hook';
 import type { RootState } from './redux/store';
 import './App.css'
+import type { IUserData } from './types/common';
 
 function App() {
   const { data } = useAppSelector((state: RootState) => state.record)
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [userData, setUserData] = useState<IUserData | null>(null);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -56,10 +58,14 @@ function App() {
         />
         <Button variant='contained' onClick={handleClickOpen} sx={{ marginLeft: '12px' }}>NEW</Button>
       </Box>
-      <ReactTable data={filteredUsers} />
+      <ReactTable 
+        data={filteredUsers}
+        setUserData={setUserData} 
+        handleClickOpen={handleClickOpen}
+      />
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
-          <ReactForm handleCloseDialog={handleClose} />
+          <ReactForm handleCloseDialog={handleClose} userToEdit={userData} />
         </DialogContent>
       </Dialog>
     </Container>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik, type FormikHelpers } from "formik";
 import { Box, Button, Step, StepLabel, Stepper } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
@@ -9,12 +9,15 @@ import StepTwo from "./Form/StepTwo";
 import StepThree from "./Form/StepThree";
 import StepFour from "./Form/StepFour";
 import { useAppDispatch } from "../redux/hook";
-import { addRecord } from "../redux/record/recordSlice";
+import { addRecord, updateRecord } from "../redux/record/recordSlice";
 
-const ReactForm: React.FC<{ handleCloseDialog: () => void }> = ({ handleCloseDialog }) => {
+const ReactForm: React.FC<{ 
+  handleCloseDialog: () => void,
+  userToEdit?: IUserData | null;
+}> = ({ handleCloseDialog, userToEdit = null }) => {
   const dispatch = useAppDispatch();
-  const [activeStep, setActiveStep] = useState(0);
-  const initialValues: IUserData = {
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [initialValues, setInitialValues]= useState<IUserData>({
     id: '',
     firstName: '',
     lastName: '',
@@ -27,16 +30,27 @@ const ReactForm: React.FC<{ handleCloseDialog: () => void }> = ({ handleCloseDia
     companyName: '',
     role: '',
     yearsOfExperience: null
-  };
+  });
   const steps = ["Personal Info", "Address Details", "Professional Info", "Review & Submit"];
   const isLastStep = activeStep === steps.length - 1;
+
+  useEffect(() => {
+    if (userToEdit) {
+      setInitialValues(userToEdit); // pre-fill for update
+    }
+  }, [userToEdit]);
+
 
   const handleNext = async (
     values: IUserData,
     actions: FormikHelpers<IUserData>
   ) => {
     if (isLastStep) {
-      dispatch(addRecord({ ...values, id: uuidv4() }))
+      if (userToEdit) {
+        dispatch(updateRecord({ id: values.id, updatedData: values }));
+      } else {
+        dispatch(addRecord({ ...values, id: uuidv4() }));
+      }
       handleCloseDialog();
     } else {
       setActiveStep((prev) => prev + 1);
@@ -109,6 +123,7 @@ const ReactForm: React.FC<{ handleCloseDialog: () => void }> = ({ handleCloseDia
   return (
     <Formik<IUserData>
       initialValues={initialValues}
+      enableReinitialize
       validationSchema={validationSchemas[activeStep]}
       onSubmit={handleNext}
     >
