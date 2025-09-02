@@ -1,4 +1,5 @@
 import {
+  Button,
   Container,
   Table,
   TableBody,
@@ -7,15 +8,23 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+import { EditOffOutlined, DeleteOutline } from '@mui/icons-material'
 import type { IUserData } from '../types/common'
+import { useAppDispatch } from '../redux/hook'
+import { removeRecord } from '../redux/record/recordSlice'
 
 const ReactTable: React.FC<{ data: IUserData[] }> = ({ data }) => {
+  const dispatch = useAppDispatch();
+  const handleDeleteRecord = (id: string) => {
+    dispatch(removeRecord({ id }));
+  }
   return (
     <Container>
       <TableContainer>
-        <Table sx={{ minWidth: 650, borderRadius: '1px solid' }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>Actions</TableCell>
               <TableCell>Id</TableCell>
               <TableCell>First Name</TableCell>
               <TableCell>Last Name</TableCell>
@@ -41,6 +50,14 @@ const ReactTable: React.FC<{ data: IUserData[] }> = ({ data }) => {
                 key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <TableCell sx={{ display: 'flex' }}>
+                  <Button>
+                    <EditOffOutlined />
+                  </Button>
+                  <Button onClick={() => handleDeleteRecord(row.id)}>
+                    <DeleteOutline />
+                  </Button>
+                </TableCell>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.firstName}</TableCell>
                 <TableCell>{row.lastName}</TableCell>

@@ -12,8 +12,11 @@ const recordSlice = createSlice({
     addRecord: (state, action) => {
       state.data = [...state.data, action.payload ]
     },
+    removeRecord: (state, action) => {
+      state.data =  state.data.filter((item) => item.id !== action.payload.id);
+    }
   },
 })
 
-export const { addRecord } = recordSlice.actions;
+export const { addRecord, removeRecord } = recordSlice.actions;
 export default recordSlice.reducer;
